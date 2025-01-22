@@ -1,0 +1,160 @@
+package auth;
+
+public class Auth {
+    private UserDatabase userDatabase;
+
+    public Auth() {
+        userDatabase = new UserDatabase();  // Initializing UserDatabase
+    }
+
+    // Register a new user
+    public User register(String username, String password) {
+        User user = new User(username, password);
+        userDatabase.addUser(user);  // Add the user to the database
+        return user;
+    }
+
+    // Login using username and password
+    public User login(String username, String password) {
+        User user = userDatabase.getUser(username);  // Fetch the user from the database
+        if (user != null && user.getPassword().equals(password)) {  // Validate password
+            return user;  // Return the user if credentials match
+        }
+        System.out.println("Invalid username or password.");
+        return null;  // Return null if credentials are incorrect
+    }
+}
+
+
+
+
+#auth.class
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package auth;
+
+public class Auth {
+   private UserDatabase userDatabase = new UserDatabase();
+
+   public Auth() {
+   }
+
+   public User register(String var1, String var2) {
+      User var3 = new User(var1, var2);
+      this.userDatabase.addUser(var3);
+      return var3;
+   }
+
+   public User login(String var1, String var2) {
+      User var3 = this.userDatabase.getUser(var1);
+      if (var3 != null && var3.getPassword().equals(var2)) {
+         return var3;
+      } else {
+         System.out.println("Invalid username or password.");
+         return null;
+      }
+   }
+}
+
+
+
+
+#user.class
+
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package auth;
+
+public class User {
+   private String username;
+   private String password;
+
+   public User(String var1, String var2) {
+      this.username = var1;
+      this.password = var2;
+   }
+
+   public String getUsername() {
+      return this.username;
+   }
+
+   public String getPassword() {
+      return this.password;
+   }
+}
+
+
+#user.java
+
+
+package auth;
+
+public class User {
+    private String username;
+    private String password;
+
+    public User(String username, String password) {
+        this.username = username;
+        this.password = password;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+}
+
+
+
+
+#user database.java
+
+package auth;
+
+import java.io.*;
+import java.util.HashMap;
+import java.util.Map;
+
+public class UserDatabase {
+    private Map<String, User> users = new HashMap<>();
+    private final String filePath = "data/users.txt";
+
+    public UserDatabase() {
+        loadUsers();
+    }
+
+    private void loadUsers() {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] userData = line.split(",");
+                if (userData.length == 2) {
+                    users.put(userData[0], new User(userData[0], userData[1]));
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("No existing user data found.");
+        }
+    }
+
+    public void addUser(User user) {
+        users.put(user.getUsername(), user);
+        saveUsers();
+    }
+
+    public User getUser(String username) {
+        return users.get(username);
+    }
+
+    private void saveUsers() {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
+            for (User user : users.values()) {
+                writer.write(user.getUsername() + "," + user.getPassword());
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("Error saving user data.");
+        }
+    }
+}
